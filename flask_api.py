@@ -20,12 +20,13 @@ def get_trips():
     continent = request.args.get('continent')  # filtro opzionale
     month = request.args.get('month')  # filtro opzionale
     place = request.args.get('place')  # filtro opzionale
+    year = request.args.get('year')  # filtro opzionale
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     if continent:
-        query = f"SELECT t.price, t.month, t.start_date, t.end_date, t.age, t.link, t.nights, t.flight, t.image_trip, t.year, d.name AS destination_name, d.country AS country_name, c.name AS continent_name, b.name AS brand_name FROM trips t JOIN destinations d ON t.destination_id = d.id JOIN continents c ON d.continent_id = c.id JOIN brand b ON d.brand_id = b.id WHERE t.month = '{month}' AND c.name = '{continent}';";
+        query = f"SELECT t.price, t.month, t.start_date, t.end_date, t.age, t.link, t.nights, t.flight, t.image_trip, t.year, d.name AS destination_name, d.country AS country_name, c.name AS continent_name, b.name AS brand_name FROM trips t JOIN destinations d ON t.destination_id = d.id JOIN continents c ON d.continent_id = c.id JOIN brand b ON d.brand_id = b.id WHERE t.month = '{month}' AND c.name = '{continent}' AND t.year = '{year}';";
         cursor.execute(query)
         results = cursor.fetchall()
 
@@ -35,9 +36,9 @@ def get_trips():
         return jsonify(results)
     elif place:
         if place.lower() == 'ovunque':
-            query = f"SELECT t.price, t.month, t.start_date, t.end_date, t.age, t.link, t.nights, t.flight, t.image_trip, t.year, d.name AS destination_name, d.country AS country_name, c.name AS continent_name, b.name AS brand_name FROM trips t JOIN destinations d ON t.destination_id = d.id JOIN continents c ON d.continent_id = c.id JOIN brand b ON d.brand_id = b.id WHERE t.month = '{month}';";
+            query = f"SELECT t.price, t.month, t.start_date, t.end_date, t.age, t.link, t.nights, t.flight, t.image_trip, t.year, d.name AS destination_name, d.country AS country_name, c.name AS continent_name, b.name AS brand_name FROM trips t JOIN destinations d ON t.destination_id = d.id JOIN continents c ON d.continent_id = c.id JOIN brand b ON d.brand_id = b.id WHERE t.month = '{month}' AND t.year = '{year}';";
         else:
-            query = f"SELECT t.price, t.month, t.start_date, t.end_date, t.age, t.link, t.nights, t.flight, t.image_trip, t.year, d.name AS destination_name, d.country AS country_name, c.name AS continent_name, b.name AS brand_name FROM trips t JOIN destinations d ON t.destination_id = d.id JOIN continents c ON d.continent_id = c.id JOIN brand b ON d.brand_id = b.id WHERE t.month = '{month}' AND d.name LIKE '%{place}%';";
+            query = f"SELECT t.price, t.month, t.start_date, t.end_date, t.age, t.link, t.nights, t.flight, t.image_trip, t.year, d.name AS destination_name, d.country AS country_name, c.name AS continent_name, b.name AS brand_name FROM trips t JOIN destinations d ON t.destination_id = d.id JOIN continents c ON d.continent_id = c.id JOIN brand b ON d.brand_id = b.id WHERE t.month = '{month}' AND d.name LIKE '%{place}%' AND t.year = '{year}';";
         cursor.execute(query)
         results = cursor.fetchall()
 
